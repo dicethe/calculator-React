@@ -1,25 +1,76 @@
-import logo from './logo.svg';
-import './App.css';
+import React from 'react';
+import store from './store';
+import "./App.css";
 
-function App() {
-  return (
-    <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.js</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
-      </header>
-    </div>
-  );
+export default class App extends React.Component {
+  constructor(props) {
+    super(props)
+    this.state = {
+       value: "0"
+    }
+    this.refOutput = React.createRef()
+  }
+
+click(item){
+  let currentValue = item;
+  let output = this.refOutput.current;
+
+  this.setState({
+    value: currentValue
+  })
+
+//this.refOutput.current.value += item.val
+  if(output.value === "0" || output.value === "Infinity") {output.value = ""}
+  output.value += currentValue;
+
 }
 
-export default App;
+
+getResult(item){
+  let output = this.refOutput.current;
+
+  if(item === "clean"){
+    output.value = output.value.length === 1 ?"0":
+    output.value.substring(0, output.value.length -1)
+    }
+
+     if(item === "delete"){
+    output.value = "0"
+  }
+  
+if(item === "="){
+  if (output.value.indexOf("/0") !== -1){
+    output.value = "Infinity"
+  } else {
+    try{output.value = eval(output.value)}   
+    catch{
+      output.value = "invalid value"
+      setTimeout(()=>{output.value = "0"}, 1000)
+  }
+    }
+  }
+
+}
+ 
+
+  render() {
+    return (
+      <div className = "container">
+        <div className = "output">
+          <input ref ={this.refOutput} type="text" defaultValue = {this.state.value}/>
+        </div>
+        <div className = "buttons">
+          {store.buttons.map((item, index) => <button
+            key ={index}
+            onClick ={() => {this.click(item.val)}}
+            >{item.val}</button>)}
+
+          {store.buttonsResult.map((item, index) => <button 
+            key ={index}
+            onClick ={() => {this.getResult(item.val)}}
+            >{item.val}</button>)}
+        </div>
+      </div>
+    )
+  }
+}
