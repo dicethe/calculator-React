@@ -19,7 +19,7 @@ click(item){
     value: currentValue
   })
 
-//this.refOutput.current.value += item.val
+
   if(output.value === "0" || output.value === "Infinity") {output.value = ""}
   output.value += currentValue;
 
@@ -37,7 +37,7 @@ getResult(item){
      if(item === "delete"){
     output.value = "0"
   }
-  
+
 if(item === "="){
   if (output.value.indexOf("/0") !== -1){
     output.value = "Infinity"
@@ -52,7 +52,6 @@ if(item === "="){
 
 }
  
-
   render() {
     return (
       <div className = "container">
@@ -61,6 +60,7 @@ if(item === "="){
         </div>
         <div className = "buttons">
           {store.buttons.map((item, index) => <button
+            className = "button"
             key ={index}
             onClick ={() => {this.click(item.val)}}
             >{item.val}</button>)}
